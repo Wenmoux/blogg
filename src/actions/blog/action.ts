@@ -41,6 +41,15 @@ function parseFrontmatter(content: string): Record<string, string | string[]> {
         currentKey = key;
         arrayKeys.push(key);
         frontmatter[key] = [];
+      } else if (value.startsWith('[') && value.endsWith(']')) {
+        // JSON 数组格式: tags: ["博客", "教程"]
+        try {
+          const parsed = JSON.parse(value);
+          frontmatter[key] = Array.isArray(parsed) ? parsed : value.replace(/^['"]|['"]$/g, '');
+        } catch {
+          frontmatter[key] = value.replace(/^['"]|['"]$/g, '');
+        }
+        currentKey = '';
       } else {
         frontmatter[key] = value.replace(/^['"]|['"]$/g, '');
         currentKey = '';
