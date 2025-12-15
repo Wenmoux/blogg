@@ -131,7 +131,7 @@ export async function getBlog(slugOrName: string): Promise<Blog | null> {
   try {
     const mds = await fs.readdir(path.join(process.cwd(), '/content/mds'));
     
-    let targetFile = mds.find((md: string) => {
+    const targetFile = mds.find((md: string) => {
       const oldMatch = md.match(/\[(.*?)\]-\[(.*?)\]\.md$/);
       if (oldMatch && oldMatch[1] === slugOrName) {
         return true;

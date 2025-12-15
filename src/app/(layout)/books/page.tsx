@@ -23,6 +23,7 @@ export default async function BooksPage() {
             <>
               <div className='relative h-64 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-700 dark:to-gray-600 overflow-hidden'>
                 {book.cover ? (
+                  // eslint-disable-next-line @next/next/no-img-element
                   <img
                     src={book.cover}
                     alt={book.title}
