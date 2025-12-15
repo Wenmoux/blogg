@@ -5,7 +5,7 @@ import { Metadata } from 'next';
 import MDComponents from '@/components/md-components';
 
 type Params = Promise<{
-  name: string;
+  slug: string;
 }>;
 
 // meta
@@ -14,24 +14,24 @@ export async function generateMetadata({
 }: {
   params: Params;
 }): Promise<Metadata> {
-  const { name } = await params;
-  const decodedName = decodeURIComponent(name);
-  const blog = await getBlog(decodedName);
+  const { slug } = await params;
+  const decodedSlug = decodeURIComponent(slug);
+  const blog = await getBlog(decodedSlug);
   if (!blog) {
     throw notFound();
   }
   return {
-    title: `Blogs-${blog.name}`,
-    description: `${blog.name} ${blog.content}`,
-    keywords: [blog.name],
+    title: `Blogs-${blog.title}`,
+    description: blog.description || `${blog.title} ${blog.content.substring(0, 100)}`,
+    keywords: blog.tags ? blog.tags.map(t => typeof t === 'object' ? t.name : t) : [blog.title],
     authors: [
       { name: 'Zwanan', url: 'https://blog.zwanan.top/about' },
       { name: 'Zwanan-github', url: 'https://github.com/zwanan-github' },
     ],
     openGraph: {
-      title: `Blogs-${blog.name}`,
-      description: `${blog.name} ${blog.content}`,
-      images: ['https://blog.zwanan.top/favicon.ico'],
+      title: `Blogs-${blog.title}`,
+      description: blog.description || `${blog.title} ${blog.content.substring(0, 100)}`,
+      images: [blog.cover || 'https://blog.zwanan.top/favicon.ico'],
     },
   };
 }
@@ -45,17 +45,14 @@ export const revalidate = 60;
 // ssg
 export async function generateStaticParams() {
   return (await getBlogList()).map(blog => ({
-    name: blog.name,
+    slug: blog.slug,
   }));
 }
 
 export default async function Page({ params }: { params: Params }) {
-  const { name } = await params;
-  // 解码URL编码的name
-  const decodedName = decodeURIComponent(name);
-  // 获取博客内容
-  // dev环境的时候不缓存
-  const blog = await getBlog(decodedName);
+  const { slug } = await params;
+  const decodedSlug = decodeURIComponent(slug);
+  const blog = await getBlog(decodedSlug);
 
   if (!blog) {
     throw notFound();
@@ -65,7 +62,7 @@ export default async function Page({ params }: { params: Params }) {
 
   const displayTitle = matchingWhiteListItem
     ? matchingWhiteListItem.title
-    : blog.name;
+    : blog.title;
 
   return (
     <div className='flex flex-col gap-4'>

@@ -5,6 +5,18 @@ export const whiteList = [
     title: '首页',
   },
   {
+    name: 'tags',
+    title: '标签',
+  },
+  {
+    name: 'books',
+    title: '书架',
+  },
+  {
+    name: 'mutter',
+    title: '碎碎念',
+  },
+  {
     name: 'about',
     title: '关于',
   },

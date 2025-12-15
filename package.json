@@ -9,7 +9,8 @@
     "lint": "next lint",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "prepare": "husky"
+    "prepare": "husky",
+    "mutter": "node scripts/add-mutter.js"
   },
   "dependencies": {
     "@google/genai": "^1.6.0",
