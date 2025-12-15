@@ -94,6 +94,9 @@ export async function getBlogList(): Promise<Blog[]> {
         const finalSlug = (frontmatter.slug as string) || slug;
         const finalDate = (frontmatter.date as string) || date;
         const dateTime = new Date(finalDate).toISOString().split('T')[0];
+            
+        // 移除 frontmatter，只保留正文内容
+        const contentWithoutFrontmatter = content.replace(/^---\s*\n[\s\S]*?\n---\s*\n/, '');
         
         let tags: Array<string | { name: string; color: string }> | undefined;
         if (frontmatter.tags && Array.isArray(frontmatter.tags)) {
@@ -197,7 +200,7 @@ export async function getBlog(slugOrName: string): Promise<Blog | null> {
       slug: finalSlug,
       title,
       date: dateTime,
-      content,
+      content: contentWithoutFrontmatter,
       description: frontmatter.description as string,
       cover: frontmatter.cover as string,
       tags,
